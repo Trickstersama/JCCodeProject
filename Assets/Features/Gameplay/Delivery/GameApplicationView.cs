@@ -14,7 +14,8 @@ namespace Features.Gameplay.Delivery
         void Start()
         {
             Context.Initialize(
-                LoadTiles()
+                LoadTiles(),
+                mapView
             );
         }
 

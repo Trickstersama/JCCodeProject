@@ -199,13 +199,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385223317}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.5762196, y: -0.051267818, z: 0.036252636, w: 0.8148793}
+  m_LocalPosition: {x: 3.2, y: 6.8, z: 0.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 70.53, y: -7.2, z: 0}
 --- !u!1 &631218508
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,4 +387,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae8a3bd041044d40af3d203f743c0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 6852117471561979584, guid: 86226791c81c11043810f7b01b0928fa, type: 3}
+  mapTilePrefab: {fileID: 5987760297473380092, guid: 86226791c81c11043810f7b01b0928fa, type: 3}
+  grassMaterial: {fileID: 2100000, guid: bd542d0286963d245a2655cf1ab06e41, type: 2}
+  forestMaterial: {fileID: 2100000, guid: 1f2d0554e1da80d43bc45c8d9e475bcd, type: 2}
+  desertMaterial: {fileID: 2100000, guid: 47be984a256931a4c8d6154ab8688a3c, type: 2}
+  mountainMaterial: {fileID: 2100000, guid: cc49906d7eb735b4182f66234a31ec4c, type: 2}
+  waterMaterial: {fileID: 2100000, guid: cd3dd366ef8e6e44b83268cd0b17e22b, type: 2}

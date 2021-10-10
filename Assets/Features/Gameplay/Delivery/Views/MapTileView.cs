@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using Features.Gameplay.Domain.ValueObjects;
 using UnityEngine;
 
-public class MapTileView : MonoBehaviour
+namespace Features.Gameplay.Delivery.Views
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MapTileView : MonoBehaviour
     {
-        
-    }
+        [SerializeField] MeshRenderer meshRenderer;
+        MapTile mapTile;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void Initialize(MapTile mapTile)
+        {
+            this.mapTile = mapTile;
+        }
+
+        public void SetMaterial(Material material)
+        {
+            meshRenderer.material = material;
+        }
     }
 }
