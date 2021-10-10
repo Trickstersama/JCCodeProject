@@ -1,5 +1,4 @@
-using Features.Gameplay.Domain.ValueObjects;
-using Features.Gameplay.Infrastructure;
+using Features.Gameplay.Domain.Infrastructure;
 using NUnit.Framework;
 using static Features.Gameplay.Tests.Mothers.CoordinateMother;
 using static Features.Gameplay.Tests.Mothers.WorldCoordinateMother;
@@ -38,17 +37,64 @@ namespace Features.Gameplay.Tests.Editor
             //then
             Assert.AreEqual(position, expectedPosition);
         }
-    }
-
-    public class CoordinatesService : ICoordinateService
-    {
-        public WorldCoordinate ToWorldPosition(Coordinate coordinate)
+        [Test]
+        public void TileOn_1_0_IsOnExpectedPosition()
         {
-            return new WorldCoordinate
-            {
-                X = coordinate.X * .5f,
-                Y = coordinate.Y * .75f
-            };
+            //given
+            var coordinatesService = new CoordinatesService();
+            var coordinate = ACoordinate(1,0);
+            var expectedPosition = AWorldCoordinate(1, 0);
+            
+            //when
+            var position = coordinatesService.ToWorldPosition(coordinate);
+            
+            //then
+            Assert.AreEqual(position, expectedPosition);
+        }
+        
+        [Test]
+        public void TileOn_0_1_IsOnExpectedPosition()
+        {
+            //given
+            var coordinatesService = new CoordinatesService();
+            var coordinate = ACoordinate(0,1);
+            var expectedPosition = AWorldCoordinate(-.5f, .75f);
+            
+            //when
+            var position = coordinatesService.ToWorldPosition(coordinate);
+            
+            //then
+            Assert.AreEqual(position, expectedPosition);
+        }
+        
+        [Test]
+        public void TileOnEvenRowIsOnExpectedPosition()
+        {
+            //given
+            var coordinatesService = new CoordinatesService();
+            var coordinate = ACoordinate(10,8);
+            var expectedPosition = AWorldCoordinate(10, 6);
+            
+            //when
+            var position = coordinatesService.ToWorldPosition(coordinate);
+            
+            //then
+            Assert.AreEqual(position, expectedPosition);
+        }
+        
+        [Test]
+        public void TileOnUnevenRowIsOnExpectedPosition()
+        {
+            //given
+            var coordinatesService = new CoordinatesService();
+            var coordinate = ACoordinate(5,7);
+            var expectedPosition = AWorldCoordinate(4.5f, 5.25f);
+            
+            //when
+            var position = coordinatesService.ToWorldPosition(coordinate);
+            
+            //then
+            Assert.AreEqual(position, expectedPosition);
         }
     }
 }
