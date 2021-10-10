@@ -11,5 +11,20 @@ namespace Features.Gameplay.Domain.Infrastructure
         {
             this.tiles = tiles.ToList();
         }
+
+        public void SetStart(Coordinate any)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetGoal(Coordinate coordinate)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ResetNodes()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

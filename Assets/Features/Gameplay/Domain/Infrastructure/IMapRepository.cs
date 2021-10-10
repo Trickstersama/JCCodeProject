@@ -6,5 +6,8 @@ namespace Features.Gameplay.Domain.Infrastructure
     public interface IMapRepository
     {
         void LoadTiles(IEnumerable<MapTile> tiles);
+        void SetStart(Coordinate coordinate);
+        void SetGoal(Coordinate coordinate);
+        void ResetNodes();
     }
 }
