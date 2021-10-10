@@ -6,7 +6,7 @@ using Features.Gameplay.Domain.ValueObjects;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Features.Gameplay.Tests.Editor
+namespace Features.Gameplay.Tests.Editor.Actions
 
 {
     [TestFixture]

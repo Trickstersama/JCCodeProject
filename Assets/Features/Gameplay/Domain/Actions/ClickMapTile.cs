@@ -27,17 +27,14 @@ namespace Features.Gameplay.Domain.Actions
                 mapRepository.SetStart(coordinate);
             else
             {
-                SetGoalOrReset(coordinate, onResetNodes, onGoalSet);
+                SendResetOrSetGoal(coordinate, onResetNodes, onGoalSet);
             }
         }
 
-        void SetGoalOrReset(Coordinate coordinate, IObserver<IGameEvent> onResetNodes, IObserver<IGameEvent> onGoalSet)
+        void SendResetOrSetGoal(Coordinate coordinate, IObserver<IGameEvent> onResetNodes, IObserver<IGameEvent> onGoalSet)
         {
             if (mapService.CoordinateIsStart(coordinate, mapRepository.GetStartCoordinate()))
-            {
-                mapRepository.ResetNodes();
                 onResetNodes?.OnNext(new GameEvent());
-            }
             else
             {
                 mapRepository.SetGoal(coordinate);

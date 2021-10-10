@@ -9,7 +9,7 @@ using static Features.Gameplay.Tests.Mothers.CoordinateMother;
 using static Features.Gameplay.Tests.Mothers.MapRepositoryMother;
 using static Features.Gameplay.Tests.Mothers.MapServiceMother;
 
-namespace Features.Gameplay.Tests.Editor
+namespace Features.Gameplay.Tests.Editor.Actions
 {
     [TestFixture]
     public class ClickMapTileTests
@@ -60,7 +60,7 @@ namespace Features.Gameplay.Tests.Editor
         }
         
         [Test]
-        public void CallCoordinateIsStart()
+        public void CallCoordinateIsStartFromService()
         {
             //given
             var mapRepository = AMapRepository(withStartSelected: true);
@@ -89,24 +89,6 @@ namespace Features.Gameplay.Tests.Editor
             
             //then
             mapRepository.Received(1).GetStartCoordinate();
-        }
-        
-        [Test]
-        public void TileClickedIsStart()
-        {
-            //given
-            var mapRepository = AMapRepository(withStartSelected: true);
-            var mapService = AMapService(withCoordinateIsStart: true);
-            var clickMapTile = AClickMapTile(
-                withMapRepository: mapRepository,
-                withMapService: mapService
-            );
-            
-            //when
-            clickMapTile.Do(ACoordinate(), null, null);
-            
-            //then
-            mapRepository.Received(1).ResetNodes();
         }
         
         [Test]
@@ -217,29 +199,6 @@ namespace Features.Gameplay.Tests.Editor
             Assert.AreEqual(mapRepository.GetGoalCoordinate(), newCoordinate);
             Assert.AreEqual(mapRepository.IsStartSelected(), true);
             Assert.AreEqual(mapRepository.IsGoalSelected(), true);
-        }
-        [Test]
-        public void FourthClickResetCoordinates()
-        {
-            //given
-            startCoordinate = ACoordinate(2, 2);
-            var mapRepository = new MapRepository(
-                withStartCoordinate: startCoordinate,
-                withGoalCoordinate: ACoordinate(11, 11)
-            );
-            var mapService = new MapService();
-            var clickMapTile = AClickMapTile(
-                withMapRepository: mapRepository,
-                withMapService: mapService
-            );
-            var newCoordinate = startCoordinate;
-            
-            //when
-            clickMapTile.Do(newCoordinate, null, null);
-            
-            //then
-            Assert.AreEqual(mapRepository.IsStartSelected(), false);
-            Assert.AreEqual(mapRepository.IsGoalSelected(), false);
         }
     }
 }
