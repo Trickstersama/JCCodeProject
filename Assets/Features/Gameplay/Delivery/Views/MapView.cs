@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
+using UniRx;
 using UnityEngine;
 
 namespace Features.Gameplay.Delivery.Views
@@ -14,23 +16,32 @@ namespace Features.Gameplay.Delivery.Views
         [SerializeField] Material desertMaterial;
         [SerializeField] Material mountainMaterial;
         [SerializeField] Material waterMaterial;
-        
+        Camera mainCamera;
+
+        void Awake()
+        {
+            mainCamera = Camera.main;
+        }
+
+
         IEnumerable<MapTile> tiles;
         ICoordinateService coordinateService;
 
         Dictionary<TileType, Material> tileMaterials = new Dictionary<TileType, Material>();
         
         
+        public readonly ISubject<MapTile> OnMapTileClicked = new Subject<MapTile>();
+
         public void Initialize(IEnumerable<MapTile> mapTile, ICoordinateService coordinateService)
         {
             tiles = mapTile;
             this.coordinateService = coordinateService;
             FillPrefabsByType();
             
-            DrawTiles();
+            CreateTiles();
         }
 
-        void DrawTiles()
+        void CreateTiles()
         {
             foreach (var tile in tiles)
             {
@@ -42,13 +53,12 @@ namespace Features.Gameplay.Delivery.Views
                 );
                 newTile.SetMaterial(GetMaterialByType(tile.TileType));
                 newTile.Initialize(tile);
+                newTile.OnMapTileClicked.Subscribe(OnMapTileClicked);
             }
         }
 
-        Material GetMaterialByType(TileType type)
-        {
-            return tileMaterials[type];
-        }
+        Material GetMaterialByType(TileType type) => 
+            tileMaterials[type];
 
         Vector3 WorldPositionByCoordinate(Coordinate coordinate)
         {

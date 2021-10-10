@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4162412587831614553}
   - component: {fileID: 5987760297473380092}
+  - component: {fileID: 8870856469217372500}
   m_Layer: 0
   m_Name: MapTilePrefab
   m_TagString: Untagged
@@ -45,6 +46,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshRenderer: {fileID: 2470616814942910978}
+--- !u!64 &8870856469217372500
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6852117471561979584}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2190622540023885545, guid: 32989c84c8b234d168f40b5652675bcc, type: 3}
 --- !u!1001 &3857598367758935686
 PrefabInstance:
   m_ObjectHideFlags: 0
