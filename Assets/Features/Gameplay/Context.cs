@@ -13,14 +13,18 @@ namespace Features.Gameplay
         public static void Initialize(IEnumerable<MapTile> tiles, MapView mapView)
         {
             var mapRepository = new MapRepository();
+            var mapService = new MapService();
             var coordinateService = new CoordinatesService();
             var startGame = new StartGame(mapRepository);
+            var clickMapTile = new ClickMapTile(
+                mapRepository: mapRepository, mapService: mapService,null);
 
             var mapPresenter = new mapPresenter(
                 tiles:tiles,
                 startGame: startGame,
                 mapView: mapView,
-                coordinateService: coordinateService
+                coordinateService: coordinateService,
+                clickMapTile: clickMapTile
                 );
         }
     }

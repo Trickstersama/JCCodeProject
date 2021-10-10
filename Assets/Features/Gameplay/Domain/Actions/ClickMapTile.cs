@@ -1,3 +1,4 @@
+using System;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
 
@@ -7,16 +8,20 @@ namespace Features.Gameplay.Domain.Actions
     {
         readonly IMapRepository mapRepository;
         readonly IMapService mapService;
+        readonly Action OnResetNodes;
 
-        public ClickMapTile(IMapRepository mapRepository, IMapService mapService)
-        {
+        public ClickMapTile(
+            IMapRepository mapRepository,
+            IMapService mapService, 
+            Action onResetNodes
+        ) {
             this.mapRepository = mapRepository;
             this.mapService = mapService;
+            OnResetNodes = onResetNodes;
         }
 
         public void Do(Coordinate coordinate)
         {
-            
             if (!mapRepository.IsStartSelected())
             {
                 mapRepository.SetStart(coordinate);
@@ -26,6 +31,7 @@ namespace Features.Gameplay.Domain.Actions
                 if (mapService.CoordinateIsStart(coordinate,mapRepository.GetStartCoordinate()))
                 {
                     mapRepository.ResetNodes();
+                    OnResetNodes?.Invoke();
                 }
                 mapRepository.SetGoal(coordinate);            
             }

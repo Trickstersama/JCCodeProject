@@ -5,7 +5,6 @@ using Features.Gameplay.Domain.Actions;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
 using UniRx;
-using UnityEngine;
 
 namespace Features.Gameplay.Delivery.Presenters
 {
@@ -17,16 +16,18 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly StartGame startGame;
         readonly MapView mapView;
         readonly ICoordinateService coordinateService;
+        readonly ClickMapTile clickMapTile;
 
-        public mapPresenter(
-            IEnumerable<MapTile> tiles, 
+        public mapPresenter(IEnumerable<MapTile> tiles,
             StartGame startGame,
             MapView mapView,
-            ICoordinateService coordinateService
+            ICoordinateService coordinateService, 
+            ClickMapTile clickMapTile
         ) {
             this.startGame = startGame;
             this.mapView = mapView;
             this.coordinateService = coordinateService;
+            this.clickMapTile = clickMapTile;
 
             DoSubscriptions();
             onInitializeMap.OnNext(tiles);
@@ -53,7 +54,8 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnMapTileClicked =>
             mapView.OnMapTileClicked
-                .Subscribe(_ => Debug.Log("CLickeo esto " + _.coordinate));
+                .Do(mapTile => clickMapTile.Do(mapTile.coordinate))
+                .Subscribe();
         
         void DoSubscriptions() => 
             PrepareForDisposition(new CompositeDisposable(), Disposables());
@@ -61,6 +63,5 @@ namespace Features.Gameplay.Delivery.Presenters
         {
             foreach (var subscription in subscriptions) subscription.AddTo(disposables);
         }
-
     }
 }
