@@ -343,6 +343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapView: {fileID: 1062145411}
+  mapSetup: {fileID: 11400000, guid: 4b2617943177e8e41b595b54775188cc, type: 2}
 --- !u!1 &1062145409
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,4 +387,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae8a3bd041044d40af3d203f743c0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 0}
+  tilePrefab: {fileID: 6852117471561979584, guid: 86226791c81c11043810f7b01b0928fa, type: 3}

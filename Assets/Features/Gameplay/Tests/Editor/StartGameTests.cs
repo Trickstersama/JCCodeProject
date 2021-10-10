@@ -18,13 +18,11 @@ namespace Features.Gameplay.Tests.Editor
             //Given
             var mapRepository = Substitute.For<IMapRepository>();
             var startGame = new StartGame(mapRepository);
-            
 
             //When
             startGame.Do(Enumerable.Empty<MapTile>());
 
             //Then
-
             mapRepository.Received(1).LoadTiles(Arg.Any<IEnumerable<MapTile>>());
         }
     }
