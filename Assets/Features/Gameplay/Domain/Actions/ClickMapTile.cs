@@ -16,13 +16,14 @@ namespace Features.Gameplay.Domain.Actions
 
         public void Do(Coordinate coordinate)
         {
-            if (mapService.StartIsNotSelected())
+            
+            if (!mapRepository.IsStartSelected())
             {
                 mapRepository.SetStart(coordinate);
             }
             else
             {
-                if (mapService.CoordinateIsStart(coordinate))
+                if (mapService.CoordinateIsStart(coordinate,mapRepository.GetStartCoordinate()))
                 {
                     mapRepository.ResetNodes();
                 }

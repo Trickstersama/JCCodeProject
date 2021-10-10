@@ -7,7 +7,9 @@ namespace Features.Gameplay.Domain.Infrastructure
     {
         void LoadTiles(IEnumerable<MapTile> tiles);
         void SetStart(Coordinate coordinate);
-        void SetGoal(Coordinate coordinate);
+        void SetGoal(Coordinate newGoal);
         void ResetNodes();
+        bool IsStartSelected();
+        Coordinate GetStartCoordinate();
     }
 }

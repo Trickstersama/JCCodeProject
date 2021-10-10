@@ -4,14 +4,6 @@ namespace Features.Gameplay.Domain.Infrastructure
 {
     public class MapService : IMapService
     {
-        public bool StartIsNotSelected()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool CoordinateIsStart(Coordinate any)
-        {
-            throw new System.NotImplementedException();
-        }
+        public bool CoordinateIsStart(Coordinate selectedCoordinate, Coordinate startCoordinate) => selectedCoordinate.Equals(startCoordinate);
     }
 }
