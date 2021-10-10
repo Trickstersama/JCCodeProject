@@ -1,6 +1,7 @@
-using System;
 using Features.Gameplay.Domain.Actions;
 using Features.Gameplay.Domain.Infrastructure;
+using static Features.Gameplay.Tests.Mothers.MapRepositoryMother;
+using static Features.Gameplay.Tests.Mothers.MapServiceMother;
 
 namespace Features.Gameplay.Tests.Mothers
 {
@@ -8,13 +9,11 @@ namespace Features.Gameplay.Tests.Mothers
     {
         public static ClickMapTile AClickMapTile(
             IMapRepository withMapRepository = null,
-            IMapService withMapService = null,
-            Action withResetNodes = null
+            IMapService withMapService = null
         ) {
             return new ClickMapTile(
-                mapRepository: withMapRepository ?? MapRepositoryMother.AMapRepository(),
-                mapService: withMapService ?? MapServiceMother.AMapService(),
-                onResetNodes: withResetNodes);
+                mapRepository: withMapRepository ?? AMapRepository(),
+                mapService: withMapService ?? AMapService());
         }
     }
 }

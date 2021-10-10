@@ -35,8 +35,11 @@ namespace Features.Gameplay.Domain.Infrastructure
             startIsSet = true;
         }
 
-        public void SetGoal(Coordinate newGoal) => 
+        public void SetGoal(Coordinate newGoal)
+        {
             goalCoordinate = newGoal;
+            goalIsSet = true;
+        }
 
         public void ResetNodes()
         {

@@ -1,6 +1,7 @@
 using System;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
+using Features.Gameplay.Infrastructure;
 
 namespace Features.Gameplay.Domain.Actions
 {
@@ -8,32 +9,39 @@ namespace Features.Gameplay.Domain.Actions
     {
         readonly IMapRepository mapRepository;
         readonly IMapService mapService;
-        readonly Action OnResetNodes;
 
         public ClickMapTile(
             IMapRepository mapRepository,
-            IMapService mapService, 
-            Action onResetNodes
+            IMapService mapService 
         ) {
             this.mapRepository = mapRepository;
             this.mapService = mapService;
-            OnResetNodes = onResetNodes;
         }
 
-        public void Do(Coordinate coordinate)
-        {
+        public void Do(
+            Coordinate coordinate, 
+            IObserver<IGameEvent> onResetNodes,
+            IObserver<IGameEvent> onGoalSet
+        ) {
             if (!mapRepository.IsStartSelected())
-            {
                 mapRepository.SetStart(coordinate);
+            else
+            {
+                SetGoalOrReset(coordinate, onResetNodes, onGoalSet);
+            }
+        }
+
+        void SetGoalOrReset(Coordinate coordinate, IObserver<IGameEvent> onResetNodes, IObserver<IGameEvent> onGoalSet)
+        {
+            if (mapService.CoordinateIsStart(coordinate, mapRepository.GetStartCoordinate()))
+            {
+                mapRepository.ResetNodes();
+                onResetNodes?.OnNext(new GameEvent());
             }
             else
             {
-                if (mapService.CoordinateIsStart(coordinate,mapRepository.GetStartCoordinate()))
-                {
-                    mapRepository.ResetNodes();
-                    OnResetNodes?.Invoke();
-                }
-                mapRepository.SetGoal(coordinate);            
+                mapRepository.SetGoal(coordinate);
+                onGoalSet?.OnNext(new GameEvent());
             }
         }
     }

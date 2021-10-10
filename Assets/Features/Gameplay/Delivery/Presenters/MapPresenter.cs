@@ -5,23 +5,27 @@ using Features.Gameplay.Domain.Actions;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
 using UniRx;
+using UnityEngine;
 
 namespace Features.Gameplay.Delivery.Presenters
 {
-    public class mapPresenter
+    public class MapPresenter
     {
         readonly ISubject<IEnumerable<MapTile>> onInitializeMap = new Subject<IEnumerable<MapTile>>();
         readonly ISubject<IEnumerable<MapTile>> onMapInitialized = new Subject<IEnumerable<MapTile>>();
+
+        readonly ISubject<IGameEvent> onResetNodes = new Subject<IGameEvent>();
+        readonly ISubject<IGameEvent> onGoalSet = new Subject<IGameEvent>();
         
         readonly StartGame startGame;
         readonly MapView mapView;
         readonly ICoordinateService coordinateService;
         readonly ClickMapTile clickMapTile;
 
-        public mapPresenter(IEnumerable<MapTile> tiles,
+        public MapPresenter(IEnumerable<MapTile> tiles,
             StartGame startGame,
             MapView mapView,
-            ICoordinateService coordinateService, 
+            ICoordinateService coordinateService,
             ClickMapTile clickMapTile
         ) {
             this.startGame = startGame;
@@ -39,7 +43,9 @@ namespace Features.Gameplay.Delivery.Presenters
             {
                 OnInitializeMap,
                 OnMapInitialized,
-                OnMapTileClicked
+                OnMapTileClicked,
+                OnResetNodes,
+                OnGoalSet
             };
 
         IDisposable OnInitializeMap =>
@@ -54,7 +60,17 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnMapTileClicked =>
             mapView.OnMapTileClicked
-                .Do(mapTile => clickMapTile.Do(mapTile.coordinate))
+                .Do(mapTile => clickMapTile.Do(mapTile.coordinate, onResetNodes, onGoalSet) )
+                .Subscribe();
+
+        IDisposable OnResetNodes =>
+            onResetNodes
+                .Do(_ => Debug.Log("Reset nodes"))
+                .Subscribe();
+
+        IDisposable OnGoalSet =>
+            onGoalSet
+                .Do(_ => Debug.Log("Goal Set, looking for path"))
                 .Subscribe();
         
         void DoSubscriptions() => 

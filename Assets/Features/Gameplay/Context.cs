@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Features.Gameplay.Delivery.Presenters;
 using Features.Gameplay.Delivery.Views;
@@ -17,15 +18,17 @@ namespace Features.Gameplay
             var coordinateService = new CoordinatesService();
             var startGame = new StartGame(mapRepository);
             var clickMapTile = new ClickMapTile(
-                mapRepository: mapRepository, mapService: mapService,null);
+                mapRepository: mapRepository, 
+                mapService: mapService
+            );
 
-            var mapPresenter = new mapPresenter(
+            var mapPresenter = new MapPresenter(
                 tiles:tiles,
                 startGame: startGame,
                 mapView: mapView,
                 coordinateService: coordinateService,
                 clickMapTile: clickMapTile
-                );
+            );
         }
     }
 }
