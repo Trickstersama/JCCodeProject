@@ -24,6 +24,7 @@ namespace Features.Gameplay
                 mapRepository: mapRepository, 
                 mapService: mapService
             );
+            var setGoalNode = new SetGoalNode(mapRepository);
 
             var mapPresenter = new MapPresenter(
                 tiles:tiles,
@@ -31,7 +32,8 @@ namespace Features.Gameplay
                 mapView: mapView,
                 coordinateService: coordinateService,
                 clickMapTile: clickMapTile,
-                resetPathNodes: resetPathNodes
+                resetPathNodes: resetPathNodes,
+                setGoalNode: setGoalNode
             );
         }
     }

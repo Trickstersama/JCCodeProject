@@ -96,7 +96,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
         }
         
         [Test]
-        public void SendOnGoalSet()
+        public void SendOnSetGoal()
         {
             //given
             var onSetGoal = Substitute.For<IObserver<Coordinate>>();

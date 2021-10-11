@@ -28,19 +28,22 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly ICoordinateService coordinateService;
         readonly ClickMapTile clickMapTile;
         readonly ResetPathNodes resetPathNodes;
+        readonly SetGoalNode setGoalNode;
 
         public MapPresenter(IEnumerable<MapTile> tiles,
             StartGame startGame,
             MapView mapView,
             ICoordinateService coordinateService,
             ClickMapTile clickMapTile,
-            ResetPathNodes resetPathNodes
+            ResetPathNodes resetPathNodes, 
+            SetGoalNode setGoalNode
         ) {
             this.startGame = startGame;
             this.mapView = mapView;
             this.coordinateService = coordinateService;
             this.clickMapTile = clickMapTile;
             this.resetPathNodes = resetPathNodes;
+            this.setGoalNode = setGoalNode;
 
             DoSubscriptions();
             onInitializeMap.OnNext(tiles);
@@ -54,6 +57,7 @@ namespace Features.Gameplay.Delivery.Presenters
                 OnMapInitialized,
                 OnMapTileClicked,
                 OnResetNodes,
+                OnNodeReset,
                 OnSetGoal,
                 OnGoalSet
             };
@@ -75,19 +79,24 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnSetGoal =>
             onSetGoal
-                .Do(_ => Debug.Log("Goal Set, looking for path"))
+                .Do(coordinate => setGoalNode.Do(coordinate, onGoalSet))
                 .Subscribe();
 
         IDisposable OnResetNodes =>
             onResetNodes
                 .Do(_ => resetPathNodes.Do(onPathNodesReset))
-                .Do(_ => Debug.Log("Reset nodes"))
                 .Subscribe();
 
         IDisposable OnGoalSet =>
-            onGoalSet.Subscribe();
-        
-        
+            onGoalSet
+                .Do(_ => Debug.Log("Goal Set, looking for path"))
+                .Subscribe();
+
+        IDisposable OnNodeReset =>
+            onPathNodesReset
+                .Do(_ => Debug.Log("Reset nodes"))
+                .Subscribe();
+            
         void DoSubscriptions() => 
             PrepareForDisposition(new CompositeDisposable(), Disposables());
         static void PrepareForDisposition(CompositeDisposable disposables, IEnumerable<IDisposable> subscriptions)

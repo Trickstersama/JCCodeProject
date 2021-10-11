@@ -21,20 +21,20 @@ namespace Features.Gameplay.Domain.Actions
         public void Do(
             Coordinate coordinate, 
             IObserver<IGameEvent> onResetNodes,
-            IObserver<Coordinate> onGoalSet
+            IObserver<Coordinate> onSetGoal
         ) {
             if (!mapRepository.IsStartSelected())
                 mapRepository.SetStart(coordinate);
             else
-                SendResetOrSetGoal(coordinate, onResetNodes, onGoalSet);
+                SendResetOrSetGoal(coordinate, onResetNodes, onSetGoal);
         }
 
-        void SendResetOrSetGoal(Coordinate coordinate, IObserver<IGameEvent> onResetNodes, IObserver<Coordinate> onGoalSet)
+        void SendResetOrSetGoal(Coordinate coordinate, IObserver<IGameEvent> onResetNodes, IObserver<Coordinate> onSetGoal)
         {
             if (IsStartNode(coordinate))
                 onResetNodes?.OnNext(new GameEvent());
             else
-                onGoalSet?.OnNext(coordinate);
+                onSetGoal?.OnNext(coordinate);
         }
 
         bool IsStartNode(Coordinate coordinate) => 

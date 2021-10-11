@@ -1,5 +1,7 @@
+using System;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
+using Features.Gameplay.Infrastructure;
 
 namespace Features.Gameplay.Domain.Reactions
 {
@@ -12,9 +14,10 @@ namespace Features.Gameplay.Domain.Reactions
             this.mapRepository = mapRepository;
         }
 
-        public void Do(Coordinate coordinate)
+        public void Do(Coordinate coordinate, IObserver<IGameEvent> onGoalSet)
         {
             mapRepository.SetGoal(coordinate);
+            onGoalSet?.OnNext(new GameEvent());
         }
     }
 }

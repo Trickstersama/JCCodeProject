@@ -1,5 +1,8 @@
+using System;
+using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.Reactions;
 using Features.Gameplay.Domain.ValueObjects;
+using Features.Gameplay.Infrastructure;
 using NSubstitute;
 using NUnit.Framework;
 using static Features.Gameplay.Tests.Mothers.CoordinateMother;
@@ -18,16 +21,69 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var resetPathNodes = new SetGoalNode(mapRepository);
             
             //When
-            resetPathNodes.Do(ACoordinate());
+            resetPathNodes.Do(ACoordinate(), null);
             
             //Then
             mapRepository.Received(1).SetGoal(Arg.Any<Coordinate>());
         }
-        /*
-        Assert.AreEqual(mapRepository.GetStartCoordinate(), startCoordinate);
-        Assert.AreEqual(mapRepository.GetGoalCoordinate(), newCoordinate);
-        Assert.AreEqual(mapRepository.IsStartSelected(), true);
-        Assert.AreEqual(mapRepository.IsGoalSelected(), true);
-        */
+        
+        [Test]
+        public void AddGoalCoordinateWithOnlyStartCoordinate()
+        {
+            //Given
+            var startCoordinate = ACoordinate(1, 1);
+            var newCoordinate = ACoordinate(7, 2);
+            
+            var mapRepository = new MapRepository(withStartCoordinate:  startCoordinate);
+            var resetPathNodes = new SetGoalNode(mapRepository);
+            
+            //When
+            resetPathNodes.Do(newCoordinate, null);
+            
+            //Then
+            Assert.AreEqual(mapRepository.GetStartCoordinate(), startCoordinate);
+            Assert.AreEqual(mapRepository.GetGoalCoordinate(), newCoordinate);
+            Assert.AreEqual(mapRepository.IsStartSelected(), true);
+            Assert.AreEqual(mapRepository.IsGoalSelected(), true);
+        }
+
+        [Test]
+        public void AddGoalCoordinateWhenAlreadyHasGoal()
+        {
+            //Given
+            var startCoordinate = ACoordinate(1, 1);
+            var goalCoordinate = ACoordinate(3, 1);
+            var newCoordinate = ACoordinate(7, 2);
+            
+            var mapRepository = new MapRepository(
+                withStartCoordinate:  startCoordinate,
+                withGoalCoordinate: goalCoordinate
+            );
+            var resetPathNodes = new SetGoalNode(mapRepository);
+            
+            //When
+            resetPathNodes.Do(newCoordinate, null);
+            
+            //Then
+            Assert.AreEqual(mapRepository.GetStartCoordinate(), startCoordinate);
+            Assert.AreEqual(mapRepository.GetGoalCoordinate(), newCoordinate);
+            Assert.AreEqual(mapRepository.IsStartSelected(), true);
+            Assert.AreEqual(mapRepository.IsGoalSelected(), true);
+        }
+
+        [Test]
+        public void SendOnGoalSet()
+        {
+            //Given
+            var onResetNodes = Substitute.For<IObserver<IGameEvent>>();
+            var mapRepository = AMapRepository();
+            var resetPathNodes = new SetGoalNode(mapRepository);
+            
+            //When
+            resetPathNodes.Do(ACoordinate(), onResetNodes);
+            
+            //Then
+            onResetNodes.Received(1).OnNext(Arg.Any<IGameEvent>());
+        }
     }
 }
