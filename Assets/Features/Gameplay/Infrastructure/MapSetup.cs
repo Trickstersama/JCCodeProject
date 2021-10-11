@@ -9,9 +9,7 @@ namespace Features.Gameplay.Infrastructure
     {
         [SerializeField] List<MapTile> tiles;
 
-        public IEnumerable<MapTile> ReadAllTiles()
-        {
-            return tiles;
-        }
+        public IEnumerable<MapTile> ReadAllTiles() => 
+            tiles;
     }
 }

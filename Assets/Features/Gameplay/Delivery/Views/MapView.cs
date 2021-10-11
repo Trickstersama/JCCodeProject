@@ -16,19 +16,11 @@ namespace Features.Gameplay.Delivery.Views
         [SerializeField] Material desertMaterial;
         [SerializeField] Material mountainMaterial;
         [SerializeField] Material waterMaterial;
-        Camera mainCamera;
-
-        void Awake()
-        {
-            mainCamera = Camera.main;
-        }
-
 
         IEnumerable<MapTile> tiles;
         ICoordinateService coordinateService;
-
         Dictionary<TileType, Material> tileMaterials = new Dictionary<TileType, Material>();
-        
+
         
         public readonly ISubject<MapTile> OnMapTileClicked = new Subject<MapTile>();
 

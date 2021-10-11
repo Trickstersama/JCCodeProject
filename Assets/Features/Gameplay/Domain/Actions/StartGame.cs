@@ -8,14 +8,10 @@ namespace Features.Gameplay.Domain.Actions
     {
         readonly IMapRepository mapRepository;
 
-        public StartGame(IMapRepository mapRepository)
-        {
+        public StartGame(IMapRepository mapRepository) => 
             this.mapRepository = mapRepository;
-        }
 
-        public void Do(IEnumerable<MapTile> tiles)
-        {
+        public void Do(IEnumerable<MapTile> tiles) => 
             mapRepository.LoadTiles(tiles);
-        }
     }
 }

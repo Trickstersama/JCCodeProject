@@ -8,7 +8,7 @@ namespace Features.Gameplay.Delivery.Views
     {
         [SerializeField] MeshRenderer meshRenderer;
 
-        public ISubject<MapTile> OnMapTileClicked = new Subject<MapTile>();
+        public readonly ISubject<MapTile> OnMapTileClicked = new Subject<MapTile>();
         MapTile mapTile;
 
         public void Initialize(MapTile mapTile) => 

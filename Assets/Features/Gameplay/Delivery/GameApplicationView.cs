@@ -19,10 +19,7 @@ namespace Features.Gameplay.Delivery
             );
         }
 
-        IEnumerable<MapTile> LoadTiles()
-        {
-            return mapSetup.ReadAllTiles();
-        }
-
+        IEnumerable<MapTile> LoadTiles() => 
+            mapSetup.ReadAllTiles();
     }
 }

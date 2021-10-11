@@ -30,7 +30,8 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly ResetPathNodes resetPathNodes;
         readonly SetGoalNode setGoalNode;
 
-        public MapPresenter(IEnumerable<MapTile> tiles,
+        public MapPresenter(
+            IEnumerable<MapTile> tiles,
             StartGame startGame,
             MapView mapView,
             ICoordinateService coordinateService,
@@ -45,7 +46,7 @@ namespace Features.Gameplay.Delivery.Presenters
             this.resetPathNodes = resetPathNodes;
             this.setGoalNode = setGoalNode;
 
-            DoSubscriptions();
+            PrepareForDisposition(new CompositeDisposable(),Disposables());
             onInitializeMap.OnNext(tiles);
         }
 
@@ -96,9 +97,7 @@ namespace Features.Gameplay.Delivery.Presenters
             onPathNodesReset
                 .Do(_ => Debug.Log("Reset nodes"))
                 .Subscribe();
-            
-        void DoSubscriptions() => 
-            PrepareForDisposition(new CompositeDisposable(), Disposables());
+        
         static void PrepareForDisposition(CompositeDisposable disposables, IEnumerable<IDisposable> subscriptions)
         {
             foreach (var subscription in subscriptions) subscription.AddTo(disposables);

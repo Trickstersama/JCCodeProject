@@ -9,10 +9,8 @@ namespace Features.Gameplay.Domain.Reactions
     {
         readonly IMapRepository mapRepository;
 
-        public SetGoalNode(IMapRepository mapRepository)
-        {
+        public SetGoalNode(IMapRepository mapRepository) => 
             this.mapRepository = mapRepository;
-        }
 
         public void Do(Coordinate coordinate, IObserver<IGameEvent> onGoalSet)
         {

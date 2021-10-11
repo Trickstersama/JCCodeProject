@@ -8,7 +8,7 @@ using NUnit.Framework;
 using static Features.Gameplay.Tests.Mothers.CoordinateMother;
 using static Features.Gameplay.Tests.Mothers.MapRepositoryMother;
 
-namespace Features.Gameplay.Tests.Editor.Actions
+namespace Features.Gameplay.Tests.Editor.Reactions
 {
     [TestFixture]
     public class SetGoalNodeTests

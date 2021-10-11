@@ -21,7 +21,6 @@ namespace Features.Gameplay.Domain.Infrastructure
                 X = coordinate.X - .5f,
                 Y = coordinate.Y * .75f
             };
-
         }
     }
 }
