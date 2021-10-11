@@ -12,6 +12,6 @@ namespace Features.Gameplay.Domain.Actions
             this.mapRepository = mapRepository;
 
         public void Do(IEnumerable<MapTile> tiles) => 
-            mapRepository.LoadTiles(tiles);
+            mapRepository.LoadNodes(tiles);
     }
 }

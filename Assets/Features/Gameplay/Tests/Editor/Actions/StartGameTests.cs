@@ -23,7 +23,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             startGame.Do(Enumerable.Empty<MapTile>());
 
             //Then
-            mapRepository.Received(1).LoadTiles(Arg.Any<IEnumerable<MapTile>>());
+            mapRepository.Received(1).LoadNodes(Arg.Any<IEnumerable<MapTile>>());
         }
     }
 }

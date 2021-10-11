@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Features.Gameplay.Domain.Infrastructure;
-using Features.Gameplay.Domain.ValueObjects;
 using PathFinding;
 
 namespace Features.Gameplay.Domain.Reactions
@@ -10,16 +8,24 @@ namespace Features.Gameplay.Domain.Reactions
     public class CalculatePath
     {
         readonly IPathfindingService pathfindingService;
+        readonly IMapRepository mapRepository;
 
-        public CalculatePath(IPathfindingService pathfindingService)
-        {
+        public CalculatePath(
+            IPathfindingService pathfindingService, 
+            IMapRepository mapRepository
+        ) {
             this.pathfindingService = pathfindingService;
+            this.mapRepository = mapRepository;
         }
 
-        public void Do(IObserver<IEnumerable<IAStarNode>> onPathNodesReset)
+        public void Do(IObserver<IEnumerable<IAStarNode>> onPathCalculated)
         {
-            onPathNodesReset?.OnNext(Enumerable.Empty<IAStarNode>());
-            pathfindingService.CalculatePath(new MapNode(), new MapNode());
+            var xxx = pathfindingService.CalculatePath(
+                mapRepository.GetStartNode(),
+                mapRepository.GetGoalNode()
+            );
+            
+            onPathCalculated?.OnNext(xxx);
         }
     }
 }
