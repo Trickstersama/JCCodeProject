@@ -4,6 +4,7 @@ using Features.Gameplay.Delivery.Presenters;
 using Features.Gameplay.Delivery.Views;
 using Features.Gameplay.Domain.Actions;
 using Features.Gameplay.Domain.Infrastructure;
+using Features.Gameplay.Domain.Reactions;
 using Features.Gameplay.Domain.ValueObjects;
 
 namespace Features.Gameplay
@@ -16,7 +17,9 @@ namespace Features.Gameplay
             var mapRepository = new MapRepository();
             var mapService = new MapService();
             var coordinateService = new CoordinatesService();
-            var startGame = new StartGame(mapRepository);
+            //actions
+            var startGame = new StartGame(mapRepository: mapRepository);
+            var resetPathNodes = new ResetPathNodes(mapRepository: mapRepository);
             var clickMapTile = new ClickMapTile(
                 mapRepository: mapRepository, 
                 mapService: mapService
@@ -27,7 +30,8 @@ namespace Features.Gameplay
                 startGame: startGame,
                 mapView: mapView,
                 coordinateService: coordinateService,
-                clickMapTile: clickMapTile
+                clickMapTile: clickMapTile,
+                resetPathNodes: resetPathNodes
             );
         }
     }

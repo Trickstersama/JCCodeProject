@@ -17,10 +17,10 @@ namespace Features.Gameplay.Tests.Editor
         {
             //Given
             var mapRepository = AMapRepository();
-            var resetPathNodes = new ResetPathNodes(mapRepository, null);
+            var resetPathNodes = new ResetPathNodes(mapRepository);
             
             //When
-            resetPathNodes.Do();
+            resetPathNodes.Do(null);
             
             //Then
             mapRepository.Received(1).ResetNodes();
@@ -34,10 +34,10 @@ namespace Features.Gameplay.Tests.Editor
                 withStartCoordinate: ACoordinate(),
                 withGoalCoordinate: ACoordinate(11, 11)
             );
-            var resetPathNodes = new ResetPathNodes(mapRepository, null);
+            var resetPathNodes = new ResetPathNodes(mapRepository);
             
             //When
-            resetPathNodes.Do();
+            resetPathNodes.Do(null);
             
             //then
             Assert.AreEqual(mapRepository.IsStartSelected(), false);
@@ -52,10 +52,10 @@ namespace Features.Gameplay.Tests.Editor
             var onPathNodesReset = Substitute.For<IObserver<IGameEvent>>();
 
             var mapRepository = AMapRepository();
-            var resetPathNodes = new ResetPathNodes(mapRepository, onPathNodesReset);
+            var resetPathNodes = new ResetPathNodes(mapRepository);
             
             //When
-            resetPathNodes.Do();
+            resetPathNodes.Do(onPathNodesReset);
             
             //Then
             onPathNodesReset.Received(1).OnNext(Arg.Any<IGameEvent>());

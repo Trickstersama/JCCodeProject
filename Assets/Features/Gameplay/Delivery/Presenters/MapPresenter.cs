@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Features.Gameplay.Delivery.Views;
 using Features.Gameplay.Domain.Actions;
+using Features.Gameplay.Domain.Reactions;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
 using UniRx;
@@ -14,24 +15,32 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly ISubject<IEnumerable<MapTile>> onInitializeMap = new Subject<IEnumerable<MapTile>>();
         readonly ISubject<IEnumerable<MapTile>> onMapInitialized = new Subject<IEnumerable<MapTile>>();
 
+        //pre
         readonly ISubject<IGameEvent> onResetNodes = new Subject<IGameEvent>();
+        readonly ISubject<Coordinate> onSetGoal = new Subject<Coordinate>();
+        
+        //post
         readonly ISubject<IGameEvent> onGoalSet = new Subject<IGameEvent>();
+        readonly ISubject<IGameEvent> onPathNodesReset = new Subject<IGameEvent>();
         
         readonly StartGame startGame;
         readonly MapView mapView;
         readonly ICoordinateService coordinateService;
         readonly ClickMapTile clickMapTile;
+        readonly ResetPathNodes resetPathNodes;
 
         public MapPresenter(IEnumerable<MapTile> tiles,
             StartGame startGame,
             MapView mapView,
             ICoordinateService coordinateService,
-            ClickMapTile clickMapTile
+            ClickMapTile clickMapTile,
+            ResetPathNodes resetPathNodes
         ) {
             this.startGame = startGame;
             this.mapView = mapView;
             this.coordinateService = coordinateService;
             this.clickMapTile = clickMapTile;
+            this.resetPathNodes = resetPathNodes;
 
             DoSubscriptions();
             onInitializeMap.OnNext(tiles);
@@ -45,6 +54,7 @@ namespace Features.Gameplay.Delivery.Presenters
                 OnMapInitialized,
                 OnMapTileClicked,
                 OnResetNodes,
+                OnSetGoal,
                 OnGoalSet
             };
 
@@ -60,18 +70,23 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnMapTileClicked =>
             mapView.OnMapTileClicked
-                .Do(mapTile => clickMapTile.Do(mapTile.coordinate, onResetNodes, onGoalSet) )
+                .Do(mapTile => clickMapTile.Do(mapTile.coordinate, onResetNodes, onSetGoal) )
+                .Subscribe();
+
+        IDisposable OnSetGoal =>
+            onSetGoal
+                .Do(_ => Debug.Log("Goal Set, looking for path"))
                 .Subscribe();
 
         IDisposable OnResetNodes =>
             onResetNodes
+                .Do(_ => resetPathNodes.Do(onPathNodesReset))
                 .Do(_ => Debug.Log("Reset nodes"))
                 .Subscribe();
 
         IDisposable OnGoalSet =>
-            onGoalSet
-                .Do(_ => Debug.Log("Goal Set, looking for path"))
-                .Subscribe();
+            onGoalSet.Subscribe();
+        
         
         void DoSubscriptions() => 
             PrepareForDisposition(new CompositeDisposable(), Disposables());

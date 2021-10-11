@@ -43,22 +43,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             //then
             mapRepository.Received(1).SetStart(Arg.Any<Coordinate>());
         }
-        
-        [Test]
-        public void ClickMapTileSetsGoalIfOnlyStartIsSet()
-        {
-            //given
-            var mapRepository = AMapRepository(withStartSelected: true);
-            var mapService = AMapService(withCoordinateIsStart: false);
-            var clickMapTile = AClickMapTile(withMapRepository: mapRepository,withMapService: mapService);
-            
-            //when
-            clickMapTile.Do(ACoordinate(), null, null);
-            
-            //then
-            mapRepository.Received(1).SetGoal(Arg.Any<Coordinate>());
-        }
-        
+
         [Test]
         public void CallCoordinateIsStartFromService()
         {
@@ -114,19 +99,21 @@ namespace Features.Gameplay.Tests.Editor.Actions
         public void SendOnGoalSet()
         {
             //given
-            var onGoalSet = Substitute.For<IObserver<IGameEvent>>();
+            var onSetGoal = Substitute.For<IObserver<Coordinate>>();
             var mapRepository = AMapRepository(withStartSelected: true);
             var mapService = AMapService(withCoordinateIsStart: false);
             var clickMapTile = AClickMapTile(
                 withMapRepository: mapRepository,
                 withMapService: mapService
             );
+            var newCoordinate = ACoordinate(1, 2);
+            var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(ACoordinate(), null, onGoalSet);
+            clickMapTile.Do(newCoordinate, null, onSetGoal);
             
             //then
-            onGoalSet.Received(1).OnNext(Arg.Any<IGameEvent>());
+            onSetGoal.Received(1).OnNext(expectedCoordinate);
         }
         
         [Test]
@@ -155,7 +142,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
         public void SecondClickSetsGoal()
         {
             //given
-            var onGoalSet = Substitute.For<IObserver<IGameEvent>>();
+            var onSetGoal = Substitute.For<IObserver<Coordinate>>();
             var mapRepository = new MapRepository(withStartCoordinate: ACoordinate());
             var mapService = new MapService();
             var clickMapTile = AClickMapTile(
@@ -166,19 +153,17 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(newCoordinate, null, onGoalSet);
+            clickMapTile.Do(newCoordinate, null, onSetGoal);
             
             //then
-            Assert.AreEqual(mapRepository.GetGoalCoordinate(), expectedCoordinate);
-            Assert.AreEqual(mapRepository.IsGoalSelected(), true);
-
+            onSetGoal.Received(1).OnNext(expectedCoordinate);
         }
         
         [Test]
         public void ThirdClickOverridesGoal()
         {
             //given
-            var onGoalSet = Substitute.For<IObserver<IGameEvent>>();
+            var onSetGoal = Substitute.For<IObserver<Coordinate>>();
             startCoordinate = ACoordinate(2, 2);
             var mapRepository = new MapRepository(
                 withStartCoordinate: startCoordinate,
@@ -190,15 +175,13 @@ namespace Features.Gameplay.Tests.Editor.Actions
                 withMapService: mapService
             );
             var newCoordinate = ACoordinate(11,11);
+            var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(newCoordinate, null, onGoalSet);
-            
+            clickMapTile.Do(newCoordinate, null, onSetGoal);
+
             //then
-            Assert.AreEqual(mapRepository.GetStartCoordinate(), startCoordinate);
-            Assert.AreEqual(mapRepository.GetGoalCoordinate(), newCoordinate);
-            Assert.AreEqual(mapRepository.IsStartSelected(), true);
-            Assert.AreEqual(mapRepository.IsGoalSelected(), true);
+            onSetGoal.Received(1).OnNext(expectedCoordinate);
         }
     }
 }

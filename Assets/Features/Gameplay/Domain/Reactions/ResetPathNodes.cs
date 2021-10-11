@@ -7,18 +7,11 @@ namespace Features.Gameplay.Domain.Reactions
     public class ResetPathNodes
     {
         readonly IMapRepository mapRepository;
-        readonly IObserver<IGameEvent> onPathNodesReset;
 
-        public ResetPathNodes(
-            IMapRepository mapRepository,
-            IObserver<IGameEvent> onPathNodesReset
-        )
-        {
+        public ResetPathNodes(IMapRepository mapRepository) =>
             this.mapRepository = mapRepository;
-            this.onPathNodesReset = onPathNodesReset;
-        }
 
-        public void Do()
+        public void Do(IObserver<IGameEvent> onPathNodesReset)
         {
             mapRepository.ResetNodes();
             onPathNodesReset?.OnNext(new GameEvent());
