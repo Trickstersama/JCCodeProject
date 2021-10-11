@@ -7,7 +7,7 @@ namespace Features.Gameplay.Domain.Infrastructure
 {
     public class MapRepository : IMapRepository
     {
-        List<MapTile> tiles = new List<MapTile>();
+        List<IAStarNode> tiles = new List<IAStarNode>();
         Coordinate startCoordinate;
         Coordinate goalCoordinate;
         
@@ -25,7 +25,7 @@ namespace Features.Gameplay.Domain.Infrastructure
         }
 
        
-        public void LoadNodes(IEnumerable<MapTile> tiles)
+        public void LoadNodes(IEnumerable<IAStarNode> tiles)
         {
             this.tiles = tiles.ToList();
         }

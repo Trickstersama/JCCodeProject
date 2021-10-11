@@ -23,7 +23,7 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly ISubject<IGameEvent> onGoalSet = new Subject<IGameEvent>();
         readonly ISubject<IGameEvent> onPathNodesReset = new Subject<IGameEvent>();
         
-        readonly StartGame startGame;
+        readonly CreateNodes createNodes;
         readonly MapView mapView;
         readonly ICoordinateService coordinateService;
         readonly ClickMapTile clickMapTile;
@@ -32,14 +32,14 @@ namespace Features.Gameplay.Delivery.Presenters
 
         public MapPresenter(
             IEnumerable<MapTile> tiles,
-            StartGame startGame,
+            CreateNodes createNodes,
             MapView mapView,
             ICoordinateService coordinateService,
             ClickMapTile clickMapTile,
             ResetPathNodes resetPathNodes, 
             SetGoalNode setGoalNode
         ) {
-            this.startGame = startGame;
+            this.createNodes = createNodes;
             this.mapView = mapView;
             this.coordinateService = coordinateService;
             this.clickMapTile = clickMapTile;
@@ -65,7 +65,7 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnInitializeMap =>
             onInitializeMap
-                .Do(tiles => startGame.Do(tiles: tiles))
+                .Do(tiles => createNodes.Do(tiles: tiles))
                 .Subscribe(onMapInitialized.OnNext);
 
         IDisposable OnMapInitialized =>

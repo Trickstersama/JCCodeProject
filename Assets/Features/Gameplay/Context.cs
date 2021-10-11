@@ -18,7 +18,10 @@ namespace Features.Gameplay
             var mapService = new MapService();
             var coordinateService = new CoordinatesService();
             //actions
-            var startGame = new StartGame(mapRepository: mapRepository);
+            var startGame = new CreateNodes(
+                mapRepository: mapRepository,
+                mapService: mapService
+            );
             var resetPathNodes = new ResetPathNodes(mapRepository: mapRepository);
             var clickMapTile = new ClickMapTile(
                 mapRepository: mapRepository, 
@@ -28,7 +31,7 @@ namespace Features.Gameplay
 
             var mapPresenter = new MapPresenter(
                 tiles:tiles,
-                startGame: startGame,
+                createNodes: startGame,
                 mapView: mapView,
                 coordinateService: coordinateService,
                 clickMapTile: clickMapTile,

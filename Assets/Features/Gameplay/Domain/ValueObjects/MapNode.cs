@@ -6,7 +6,7 @@ namespace Features.Gameplay.Domain.ValueObjects
 {
     public class MapNode : IAStarNode
     {
-        int weight;
+        //int weight;
         public IEnumerable<IAStarNode> Neighbours { get; } //referencia a nodos adyacentes
         public float CostTo(IAStarNode neighbour) //el costo en distancia con respecto a los vecinos
         {
