@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Features.Gameplay.Domain.Infrastructure;
@@ -25,7 +26,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var startGame = ACreateNodes(withMapRepository: mapRepository);
 
             //When
-            startGame.Do(Enumerable.Empty<MapTile>());
+            startGame.Do(Enumerable.Empty<MapTile>(), null);
 
             //Then
             mapRepository.Received(1).LoadNodes(Arg.Any<IEnumerable<MapNode>>());
@@ -39,7 +40,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var createNodes = ACreateNodes(withMapService: mapService);
 
             //When
-            createNodes.Do(Enumerable.Empty<MapTile>());
+            createNodes.Do(Enumerable.Empty<MapTile>(), null);
 
             //Then
             mapService.Received(1).CreateNodesFromTiles(Arg.Any<IEnumerable<MapTile>>());
@@ -53,13 +54,28 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var createNodes = ACreateNodes(withMapService: mapService);
 
             //When
-            createNodes.Do(Enumerable.Empty<MapTile>());
+            createNodes.Do(Enumerable.Empty<MapTile>(), null);
 
             //Then
             mapService.Received(1).SetNodesNeighbours(Arg.Any<IEnumerable<MapNode>>());
         }
 
-        
+        [Test]
+        public void SendOnNodesCreated()
+        {
+            //Given
+            var onResetNodes = Substitute.For<IObserver<IEnumerable<MapTile>>>();
+            var mapService = AMapService();
+            var createNodes = ACreateNodes(withMapService: mapService);
+
+            //When
+            createNodes.Do(Enumerable.Empty<MapTile>(), onResetNodes);
+
+            //Then
+            onResetNodes.Received(1).OnNext(Arg.Any<IEnumerable<MapTile>>());
+
+            
+        }
         [Test] 
         public void CreateOneNode()
         {
@@ -75,7 +91,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var expectedNodes = new []{AMapNode(withWeight: GameConstants.desertWeight)};
 
             //When
-            createNodes.Do(inputTiles);
+            createNodes.Do(inputTiles, null);
 
             //Then
             Assert.IsTrue(mapRepository.GetNodes.All(expectedNodes.Contains) );
@@ -111,7 +127,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             };
 
             //When
-            createNodes.Do(inputTiles);
+            createNodes.Do(inputTiles, null);
 
             //Then
             Assert.IsTrue(mapRepository.GetNodes.All(expectedNodes.Contains) );
@@ -131,7 +147,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             );
 
             //When
-            createNodes.Do(inputTiles);
+            createNodes.Do(inputTiles, null);
 
             //Then
             Assert.IsTrue(!mapRepository.GetStartNode().Neighbours.Any());
@@ -169,7 +185,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             };
 
             //When
-            createNodes.Do(inputTiles);
+            createNodes.Do(inputTiles, null);
 
             //Then
             Assert.IsTrue(mapRepository.GetStartNode().Neighbours.All(expectedNodes.Contains));
@@ -205,7 +221,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             };
 
             //When
-            createNodes.Do(inputTiles);
+            createNodes.Do(inputTiles, null);
 
             //Then
             Assert.IsTrue(mapRepository.GetStartNode().Neighbours.All(expectedNodes.Contains));

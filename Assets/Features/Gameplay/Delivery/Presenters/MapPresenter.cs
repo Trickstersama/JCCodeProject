@@ -12,15 +12,15 @@ namespace Features.Gameplay.Delivery.Presenters
 {
     public class MapPresenter
     {
-        readonly ISubject<IEnumerable<MapTile>> onInitializeMap = new Subject<IEnumerable<MapTile>>();
-        readonly ISubject<IEnumerable<MapTile>> onMapInitialized = new Subject<IEnumerable<MapTile>>();
-
         //pre
+        readonly ISubject<IEnumerable<MapTile>> onCreateNodes = new Subject<IEnumerable<MapTile>>();
         readonly ISubject<IGameEvent> onResetNodes = new Subject<IGameEvent>();
         readonly ISubject<Coordinate> onSetGoal = new Subject<Coordinate>();
         
         //post
+        readonly ISubject<IEnumerable<MapTile>> onNodesCreated = new Subject<IEnumerable<MapTile>>();
         readonly ISubject<IGameEvent> onGoalSet = new Subject<IGameEvent>();
+        readonly ISubject<Coordinate> onStartSet = new Subject<Coordinate>();
         readonly ISubject<IGameEvent> onPathNodesReset = new Subject<IGameEvent>();
         
         readonly CreateNodes createNodes;
@@ -47,7 +47,7 @@ namespace Features.Gameplay.Delivery.Presenters
             this.setGoalNode = setGoalNode;
 
             PrepareForDisposition(new CompositeDisposable(),Disposables());
-            onInitializeMap.OnNext(tiles);
+            onCreateNodes.OnNext(tiles);
         }
 
 
@@ -60,27 +60,38 @@ namespace Features.Gameplay.Delivery.Presenters
                 OnResetNodes,
                 OnNodeReset,
                 OnSetGoal,
-                OnGoalSet
+                OnGoalSet,
+                OnStartSet
             };
 
         IDisposable OnInitializeMap =>
-            onInitializeMap
-                .Do(tiles => createNodes.Do(tiles: tiles))
-                .Subscribe(onMapInitialized.OnNext);
+            onCreateNodes
+                .Do(tiles => createNodes.Do(tiles: tiles, onNodesCreated))
+                .Subscribe();
 
         IDisposable OnMapInitialized =>
-            onMapInitialized
+            onNodesCreated
                 .Do(tiles => mapView.Initialize(tiles, coordinateService))
                 .Subscribe();
 
         IDisposable OnMapTileClicked =>
             mapView.OnMapTileClicked
-                .Do(mapTile => clickMapTile.Do(mapTile.coordinate, onResetNodes, onSetGoal) )
+                .Do(mapTile => clickMapTile.Do(
+                    mapTile.coordinate, 
+                    onResetNodes, 
+                    onSetGoal, 
+                    onStartSet)
+                )
                 .Subscribe();
 
         IDisposable OnSetGoal =>
             onSetGoal
                 .Do(coordinate => setGoalNode.Do(coordinate, onGoalSet))
+                .Subscribe();
+
+        IDisposable OnStartSet =>
+            onStartSet
+                .Do(mapView.SetStart)
                 .Subscribe();
 
         IDisposable OnResetNodes =>
@@ -95,7 +106,7 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnNodeReset =>
             onPathNodesReset
-                .Do(_ => Debug.Log("Reset nodes"))
+                .Do(_ => mapView.ResetNodes())
                 .Subscribe();
         
         static void PrepareForDisposition(CompositeDisposable disposables, IEnumerable<IDisposable> subscriptions)

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Features.Gameplay.Domain.ValueObjects;
 
 namespace Features.Gameplay.Domain.Infrastructure
@@ -25,7 +24,16 @@ namespace Features.Gameplay.Domain.Infrastructure
 
         public IEnumerable<MapNode> SetNodesNeighbours(IEnumerable<MapNode> nodes)
         {
-            var nodesByCoordinate = nodes.ToDictionary(node => node.Coordinate());
+            var nodesByCoordinate = new Dictionary<Coordinate, MapNode>();
+            foreach (var node in nodes)
+            {
+                nodesByCoordinate.Add(node.Coordinate(), node);
+            }
+            return CreateNodeWithNeighboursList(nodesByCoordinate);
+        }
+
+        IEnumerable<MapNode> CreateNodeWithNeighboursList(Dictionary<Coordinate, MapNode> nodesByCoordinate)
+        {
             var nodesWithNeighbour = new List<MapNode>();
             foreach (var kvpNode in nodesByCoordinate)
             {
@@ -33,6 +41,7 @@ namespace Features.Gameplay.Domain.Infrastructure
                 node.SetNeighbours(FindNeighboursFor(kvpNode.Key, nodesByCoordinate));
                 nodesWithNeighbour.Add(kvpNode.Value);
             }
+
             return nodesWithNeighbour;
         }
 

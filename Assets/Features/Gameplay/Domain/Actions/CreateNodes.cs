@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
@@ -17,12 +18,12 @@ namespace Features.Gameplay.Domain.Actions
             this.mapService = mapService;
         }
 
-        public void Do(IEnumerable<MapTile> tiles)
+        public void Do(IEnumerable<MapTile> tiles, IObserver<IEnumerable<MapTile>> onNodesCreated)
         {
-
             var freshNodes = mapService.CreateNodesFromTiles(tiles);
             var nodesWithNeighbours = mapService.SetNodesNeighbours(freshNodes);
             mapRepository.LoadNodes(nodesWithNeighbours);
+            onNodesCreated?.OnNext(tiles);
         }
     }   
 }

@@ -24,7 +24,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var clickMapTile = AClickMapTile(withMapRepository: mapRepository);
             
             //when
-            clickMapTile.Do(ACoordinate(), null, null);
+            clickMapTile.Do(ACoordinate(), null, null, null);
             
             //then
             mapRepository.Received(1).IsStartSelected();
@@ -38,7 +38,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var clickMapTile = AClickMapTile(withMapRepository: mapRepository);
             
             //when
-            clickMapTile.Do(ACoordinate(), null, null);
+            clickMapTile.Do(ACoordinate(), null, null, null);
             
             //then
             mapRepository.Received(1).SetStart(Arg.Any<Coordinate>());
@@ -56,7 +56,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             );
             
             //when
-            clickMapTile.Do(ACoordinate(), null, null);
+            clickMapTile.Do(ACoordinate(), null, null, null);
             
             //then
             mapService.Received(1).CoordinateIsStart(Arg.Any<Coordinate>(), Arg.Any<Coordinate>());
@@ -70,7 +70,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var clickMapTile = AClickMapTile(withMapRepository: mapRepository);
             
             //when
-            clickMapTile.Do(ACoordinate(), null, null);
+            clickMapTile.Do(ACoordinate(), null, null, null);
             
             //then
             mapRepository.Received(1).GetStartCoordinate();
@@ -89,7 +89,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             );
             
             //when
-            clickMapTile.Do(ACoordinate(), onResetNodes, null);
+            clickMapTile.Do(ACoordinate(), onResetNodes, null, null);
             
             //then
             onResetNodes.Received(1).OnNext(Arg.Any<IGameEvent>());
@@ -110,7 +110,27 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(newCoordinate, null, onSetGoal);
+            clickMapTile.Do(newCoordinate, null, onSetGoal, null);
+            
+            //then
+            onSetGoal.Received(1).OnNext(expectedCoordinate);
+        }
+        [Test]
+        public void SendOnStartSet()
+        {
+            //given
+            var onSetGoal = Substitute.For<IObserver<Coordinate>>();
+            var mapRepository = AMapRepository(withStartSelected: true);
+            var mapService = AMapService(withCoordinateIsStart: false);
+            var clickMapTile = AClickMapTile(
+                withMapRepository: mapRepository,
+                withMapService: mapService
+            );
+            var newCoordinate = ACoordinate(1, 2);
+            var expectedCoordinate = newCoordinate;
+            
+            //when
+            clickMapTile.Do(newCoordinate, null, onSetGoal, null);
             
             //then
             onSetGoal.Received(1).OnNext(expectedCoordinate);
@@ -130,7 +150,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(newCoordinate, null, null);
+            clickMapTile.Do(newCoordinate, null, null, null);
             
             //then
             Assert.AreEqual(mapRepository.GetStartCoordinate(), expectedCoordinate);
@@ -153,7 +173,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(newCoordinate, null, onSetGoal);
+            clickMapTile.Do(newCoordinate, null, onSetGoal, null);
             
             //then
             onSetGoal.Received(1).OnNext(expectedCoordinate);
@@ -178,7 +198,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
             var expectedCoordinate = newCoordinate;
             
             //when
-            clickMapTile.Do(newCoordinate, null, onSetGoal);
+            clickMapTile.Do(newCoordinate, null, onSetGoal, null);
 
             //then
             onSetGoal.Received(1).OnNext(expectedCoordinate);

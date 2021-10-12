@@ -21,16 +21,23 @@ namespace Features.Gameplay.Domain.Actions
         public void Do(
             Coordinate coordinate, 
             IObserver<IGameEvent> onResetNodes,
-            IObserver<Coordinate> onSetGoal
+            IObserver<Coordinate> onSetGoal,
+            IObserver<Coordinate> onStartSet
         ) {
             if (!mapRepository.IsStartSelected())
+            {
                 mapRepository.SetStart(coordinate);
+                onStartSet?.OnNext(coordinate);
+            }
             else
                 SendResetOrSetGoal(coordinate, onResetNodes, onSetGoal);
         }
 
-        void SendResetOrSetGoal(Coordinate coordinate, IObserver<IGameEvent> onResetNodes, IObserver<Coordinate> onSetGoal)
-        {
+        void SendResetOrSetGoal(
+            Coordinate coordinate, 
+            IObserver<IGameEvent> onResetNodes, 
+            IObserver<Coordinate> onSetGoal
+        ) {
             if (IsStartNode(coordinate))
                 onResetNodes?.OnNext(new GameEvent());
             else

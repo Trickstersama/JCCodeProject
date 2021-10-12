@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
@@ -31,6 +30,16 @@ namespace Features.Gameplay.Delivery.Views
             FillPrefabsByType();
             
             CreateTiles();
+        }
+
+        public void ResetNodes()
+        {
+            Debug.Log("Reset nodes");
+        }
+        
+        public void SetStart(Coordinate coordinate)
+        {
+            Debug.Log("Start set");
         }
 
         void CreateTiles()

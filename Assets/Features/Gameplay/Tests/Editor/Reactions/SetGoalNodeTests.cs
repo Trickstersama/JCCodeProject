@@ -75,12 +75,13 @@ namespace Features.Gameplay.Tests.Editor.Reactions
         public void SendOnGoalSet()
         {
             //Given
+            var goalCoordinate = ACoordinate(2, 3);
             var onResetNodes = Substitute.For<IObserver<IGameEvent>>();
             var mapRepository = AMapRepository();
             var resetPathNodes = new SetGoalNode(mapRepository);
             
             //When
-            resetPathNodes.Do(ACoordinate(), onResetNodes);
+            resetPathNodes.Do(goalCoordinate, onResetNodes);
             
             //Then
             onResetNodes.Received(1).OnNext(Arg.Any<IGameEvent>());
