@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Features.Gameplay.Domain.ValueObjects;
 using PathFinding;
 
@@ -7,7 +6,7 @@ namespace Features.Gameplay.Domain.Infrastructure
 {
     public class MapRepository : IMapRepository
     {
-        List<IAStarNode> tiles = new List<IAStarNode>();
+        Dictionary< Coordinate, MapNode> nodes = new Dictionary<Coordinate, MapNode>();
         Coordinate startCoordinate;
         Coordinate goalCoordinate;
         
@@ -24,10 +23,15 @@ namespace Features.Gameplay.Domain.Infrastructure
             goalIsSet = withGoalCoordinate != null;
         }
 
-       
-        public void LoadNodes(IEnumerable<IAStarNode> tiles)
+        public IEnumerable<IAStarNode> GetNodes => nodes.Values;
+
+
+        public void LoadNodes(IEnumerable<MapNode> newNodes)
         {
-            this.tiles = tiles.ToList();
+            foreach (var newNode in newNodes)
+            {
+                nodes.Add(newNode.Coordinate(), newNode);
+            }
         }
 
         public void SetStart(Coordinate newStart)
@@ -56,12 +60,12 @@ namespace Features.Gameplay.Domain.Infrastructure
 
         public IAStarNode GetStartNode()
         {
-            return new MapNode();
+            return nodes[startCoordinate];
         }
 
         public IAStarNode GetGoalNode()
         {
-            return new MapNode();
+            return nodes[goalCoordinate];
         }
 
         public Coordinate GetGoalCoordinate() => 

@@ -3,7 +3,6 @@ using System.Linq;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
 using NSubstitute;
-using PathFinding;
 
 namespace Features.Gameplay.Tests.Mothers
 {
@@ -16,9 +15,9 @@ namespace Features.Gameplay.Tests.Mothers
             service.CoordinateIsStart(Arg.Any<Coordinate>(), Arg.Any<Coordinate>())
                 .Returns(withCoordinateIsStart);
             service.CreateNodesFromTiles(Arg.Any<IEnumerable<MapTile>>())
-                .Returns(new Dictionary<Coordinate, IAStarNode>());
-            service.SetNodesNeighbours(Arg.Any<Dictionary<Coordinate, IAStarNode>>())
-                .Returns(Enumerable.Empty<IAStarNode>());
+                .Returns(Enumerable.Empty<MapNode>());
+            service.SetNodesNeighbours(Arg.Any<IEnumerable<MapNode>>())
+                .Returns(Enumerable.Empty<MapNode>());
             return service;
         }
     }

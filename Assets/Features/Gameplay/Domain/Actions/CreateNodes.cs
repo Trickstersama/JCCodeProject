@@ -21,8 +21,8 @@ namespace Features.Gameplay.Domain.Actions
         {
 
             var freshNodes = mapService.CreateNodesFromTiles(tiles);
-            var xxx = mapService.SetNodesNeighbours(freshNodes);
-            mapRepository.LoadNodes(xxx);
+            var nodesWithNeighbours = mapService.SetNodesNeighbours(freshNodes);
+            mapRepository.LoadNodes(nodesWithNeighbours);
         }
     }   
 }
