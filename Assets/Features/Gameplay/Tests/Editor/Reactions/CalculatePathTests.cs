@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
 using NSubstitute;
@@ -77,7 +79,7 @@ namespace Features.Gameplay.Tests.Editor.Reactions
         {
             //Given
             var startCoordinate = ACoordinate(0, 0);
-            var goalCoordinate = ACoordinate(4, 0);
+            var goalCoordinate = ACoordinate(1, 0);
             var onPathCalculated = Substitute.For<IObserver<IEnumerable<Coordinate>>>();
             
             var mapRepository = new MapRepository(
@@ -91,11 +93,89 @@ namespace Features.Gameplay.Tests.Editor.Reactions
                 withPathfindingService: pathfindingService
                 );
             
+            var expectedPath = new List<Coordinate>()
+            {
+                ACoordinate(0, 0),
+                ACoordinate(1, 0),
+            };
+
             //When
             calculatePath.Do(onPathCalculated: onPathCalculated);
             
             //Then
-            onPathCalculated.Received(1).OnNext(Arg.Any<IEnumerable<Coordinate>>());
+            onPathCalculated.Received(1).OnNext(Arg.Is<IEnumerable<Coordinate>>(actual => expectedPath.SequenceEqual(actual)));
+        }
+        
+        [Test]
+        public void TravelTTheSide()
+        {
+            //Given
+            var startCoordinate = ACoordinate(0, 0);
+            var goalCoordinate = ACoordinate(4, 0);
+            var onPathCalculated = Substitute.For<IObserver<IEnumerable<Coordinate>>>();
+            
+            var mapRepository = new MapRepository(
+                withStartCoordinate: startCoordinate,
+                withGoalCoordinate: goalCoordinate,
+                withNodes: SomeNodes()
+            );
+            var pathfindingService = new PathFindingService();
+            var calculatePath = ACalculatePath(
+                withMapRepository: mapRepository,
+                withPathfindingService: pathfindingService
+            );
+
+            var expectedPath = new List<Coordinate>()
+            {
+                ACoordinate(0, 0),
+                ACoordinate(1, 0),
+                ACoordinate(2, 0),
+                ACoordinate(3, 0),
+                ACoordinate(4, 0),
+            };
+            
+            //When
+            calculatePath.Do(onPathCalculated: onPathCalculated);
+            
+            //Then
+            onPathCalculated.Received(1).OnNext(Arg.Is<IEnumerable<Coordinate>>(actual => expectedPath.SequenceEqual(actual)));
+        }
+        
+        [Test]
+        public void TravelToTop()
+        {
+            //Given
+            var startCoordinate = ACoordinate(0, 0);
+            var goalCoordinate = ACoordinate(3, 4);
+            var onPathCalculated = Substitute.For<IObserver<IEnumerable<Coordinate>>>();
+            
+            var mapRepository = new MapRepository(
+                withStartCoordinate: startCoordinate,
+                withGoalCoordinate: goalCoordinate,
+                withNodes: SomeNodes()
+            );
+            var pathfindingService = new PathFindingService();
+            var calculatePath = ACalculatePath(
+                withMapRepository: mapRepository,
+                withPathfindingService: pathfindingService
+            );
+
+            var expectedPath = new List<Coordinate>()
+            {
+                ACoordinate(0, 0),
+                ACoordinate(0, 1),
+                ACoordinate(0, 2),
+                ACoordinate(1, 2),
+                ACoordinate(2, 3),
+                ACoordinate(3, 3),
+                ACoordinate(3, 4),
+            };
+            
+            //When
+            calculatePath.Do(onPathCalculated: onPathCalculated);
+            
+            //Then
+            onPathCalculated.Received(1).OnNext(Arg.Is<IEnumerable<Coordinate>>(actual => expectedPath.SequenceEqual(actual)));
         }
 
         Dictionary<Coordinate, MapNode> SomeNodes()
