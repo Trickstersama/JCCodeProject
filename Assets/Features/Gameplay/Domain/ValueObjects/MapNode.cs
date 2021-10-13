@@ -60,6 +60,9 @@ namespace Features.Gameplay.Domain.ValueObjects
 
         public Coordinate Coordinate() => 
             coordinate;
+
+        public int GetWeight => 
+            weight;
         
         WorldCoordinate calculatePosition(Coordinate coordinate)
         {

@@ -71,6 +71,9 @@ namespace Features.Gameplay.Domain.Infrastructure
             return nodes[goalCoordinate];
         }
 
+        public bool IsWalkable(Coordinate coordinate) => 
+            nodes[coordinate].GetWeight != GameConstants.waterWeight;
+
         public Coordinate GetGoalCoordinate() => 
             goalCoordinate;
         

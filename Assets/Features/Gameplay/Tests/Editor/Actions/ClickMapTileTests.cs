@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Features.Gameplay.Domain.Infrastructure;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
@@ -8,14 +9,13 @@ using static Features.Gameplay.Tests.Mothers.ClickMapTileMother;
 using static Features.Gameplay.Tests.Mothers.CoordinateMother;
 using static Features.Gameplay.Tests.Mothers.MapRepositoryMother;
 using static Features.Gameplay.Tests.Mothers.MapServiceMother;
+using static Features.Gameplay.Tests.Mothers.ValueObjects.MapNodeMother;
 
 namespace Features.Gameplay.Tests.Editor.Actions
 {
     [TestFixture]
     public class ClickMapTileTests
     {
-        Coordinate startCoordinate;
-
         [Test]
         public void CallIsStartSelectedFromMapRepository()
         {
@@ -137,10 +137,45 @@ namespace Features.Gameplay.Tests.Editor.Actions
         }
         
         [Test]
+        public void DoNotEmitIfTileIsNotWalkable()
+        {
+            //given
+            var onSetGoal = Substitute.For<IObserver<Coordinate>>();
+            var onResetNodes = Substitute.For<IObserver<IGameEvent>>();
+            var onStartSet = Substitute.For<IObserver<Coordinate>>();
+            var mapRepository = AMapRepository(withStartSelected: true, withCoordinateIsWalkable: false);
+            var mapService = AMapService(withCoordinateIsStart: false);
+            var clickMapTile = AClickMapTile(
+                withMapRepository: mapRepository,
+                withMapService: mapService
+            );
+            var newCoordinate = ACoordinate(1, 2);
+            
+            //when
+            clickMapTile.Do(
+                coordinate: newCoordinate, 
+                onResetNodes: onResetNodes, 
+                onSetGoal: onSetGoal, 
+                onStartSet: onStartSet
+            );
+            
+            //then
+            onSetGoal.Received(0).OnNext(Arg.Any<Coordinate>());
+            onStartSet.Received(0).OnNext(Arg.Any<Coordinate>());
+            onResetNodes.Received(0).OnNext(Arg.Any<IGameEvent>());
+        }
+        
+        [Test]
         public void FirstClickSetsStart()
         {
             //given
-            var mapRepository = new MapRepository();
+            var startCoordinate = ACoordinate(3, 3);
+            var nodes = new Dictionary<Coordinate, MapNode>
+            {
+                {startCoordinate, AMapNode(1, startCoordinate)}
+            };
+            
+            var mapRepository = new MapRepository(withNodes: nodes);
             var mapService = new MapService();
             var clickMapTile = AClickMapTile(
                 withMapRepository: mapRepository,
@@ -162,14 +197,25 @@ namespace Features.Gameplay.Tests.Editor.Actions
         public void SecondClickSetsGoal()
         {
             //given
+            var startCoordinate = ACoordinate(11, 11);
+            var goalCoordinate = ACoordinate(3, 3);
+            var nodes = new Dictionary<Coordinate, MapNode>
+            {
+                {startCoordinate, AMapNode(1, startCoordinate)},
+                {goalCoordinate, AMapNode(1, goalCoordinate)}
+            };
+
+            
             var onSetGoal = Substitute.For<IObserver<Coordinate>>();
-            var mapRepository = new MapRepository(withStartCoordinate: ACoordinate());
+            var mapRepository = new MapRepository(
+                withStartCoordinate: startCoordinate,
+                withNodes: nodes);
             var mapService = new MapService();
             var clickMapTile = AClickMapTile(
                 withMapRepository: mapRepository,
                 withMapService: mapService
             );
-            var newCoordinate = ACoordinate(3, 3);
+            var newCoordinate = goalCoordinate;
             var expectedCoordinate = newCoordinate;
             
             //when
@@ -183,11 +229,21 @@ namespace Features.Gameplay.Tests.Editor.Actions
         public void ThirdClickOverridesGoal()
         {
             //given
+
+            var startCoordinate = ACoordinate(11, 11);
+            var goalCoordinate = ACoordinate(2, 2);
+            var nodes = new Dictionary<Coordinate, MapNode>
+            {
+                {startCoordinate, AMapNode(1, startCoordinate)},
+                {goalCoordinate, AMapNode(1, goalCoordinate)}
+            };
+
             var onSetGoal = Substitute.For<IObserver<Coordinate>>();
             startCoordinate = ACoordinate(2, 2);
             var mapRepository = new MapRepository(
                 withStartCoordinate: startCoordinate,
-                withGoalCoordinate: ACoordinate(11, 11)
+                withGoalCoordinate: ACoordinate(11, 11),
+                withNodes: nodes
             );
             var mapService = new MapService();
             var clickMapTile = AClickMapTile(

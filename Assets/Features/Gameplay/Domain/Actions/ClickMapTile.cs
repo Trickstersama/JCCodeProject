@@ -24,13 +24,16 @@ namespace Features.Gameplay.Domain.Actions
             IObserver<Coordinate> onSetGoal,
             IObserver<Coordinate> onStartSet
         ) {
-            if (!mapRepository.IsStartSelected())
+            if (mapRepository.IsWalkable(coordinate))
             {
-                mapRepository.SetStart(coordinate);
-                onStartSet?.OnNext(coordinate);
+                if (!mapRepository.IsStartSelected())
+                {
+                    mapRepository.SetStart(coordinate);
+                    onStartSet?.OnNext(coordinate);
+                }
+                else
+                    SendResetOrSetGoal(coordinate, onResetNodes, onSetGoal);
             }
-            else
-                SendResetOrSetGoal(coordinate, onResetNodes, onSetGoal);
         }
 
         void SendResetOrSetGoal(

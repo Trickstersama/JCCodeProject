@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Features.Gameplay.Domain.ValueObjects;
 using Features.Gameplay.Infrastructure;
 using UniRx;
@@ -15,37 +16,41 @@ namespace Features.Gameplay.Delivery.Views
         [SerializeField] Material desertMaterial;
         [SerializeField] Material mountainMaterial;
         [SerializeField] Material waterMaterial;
+        //
+        [SerializeField] Material pathMaterial;
+        [SerializeField] Material startGoalMaterial;
+        [SerializeField] Material DefaultTintMaterial;
 
-        IEnumerable<MapTile> tiles;
         ICoordinateService coordinateService;
         Dictionary<TileType, Material> tileMaterials = new Dictionary<TileType, Material>();
         Dictionary<Coordinate, MapTileView> tileViews = new Dictionary<Coordinate, MapTileView>();
+        List<Coordinate> tilesInPath = new List<Coordinate>();
+        
 
         
         public readonly ISubject<MapTile> OnMapTileClicked = new Subject<MapTile>();
 
         public void Initialize(IEnumerable<MapTile> mapTile, ICoordinateService coordinateService)
         {
-            tiles = mapTile;
             this.coordinateService = coordinateService;
             FillPrefabsByType();
             
-            CreateTiles();
+            CreateTiles(mapTile);
         }
 
-        public void ResetNodes()
-        {
-            Debug.Log("Reset nodes");
-        }
-        
+        public void ResetNodes() => 
+            ResetPathToDefaultMaterial();
+
         public void SetStart(Coordinate coordinate)
         {
-            Debug.Log("Start set");
+            tilesInPath.Clear();
+            tileViews[coordinate].ShowAs(startGoalMaterial);
+            tilesInPath.Add(coordinate);
         }
 
-        void CreateTiles()
+        void CreateTiles(IEnumerable<MapTile> mapTiles)
         {
-            foreach (var tile in tiles)
+            foreach (var tile in mapTiles)
             {
                 var newTile = Instantiate(
                     mapTilePrefab,
@@ -80,11 +85,22 @@ namespace Features.Gameplay.Delivery.Views
 
         public void DrawPath(IEnumerable<Coordinate> path)
         {
-            foreach (var tile in path)
+            ResetPathToDefaultMaterial();
+            
+            tilesInPath = path.ToList();
+            var pathList = path.ToArray();
+            tileViews[pathList[0]].ShowAs(startGoalMaterial);
+            tileViews[pathList[pathList.Length - 1]].ShowAs(startGoalMaterial);
+            for (var i = 1; i < pathList.Length-1; i++)
             {
-                tileViews[tile].ShowAsPath();
-                Debug.Log($"Tile {tile}");
+                tileViews[pathList[i]].ShowAs(pathMaterial);
             }
+        }
+
+        void ResetPathToDefaultMaterial()
+        {
+            tilesInPath.ForEach(tile => tileViews[tile].ShowAs(DefaultTintMaterial));
+            tilesInPath.Clear();
         }
     }
 }

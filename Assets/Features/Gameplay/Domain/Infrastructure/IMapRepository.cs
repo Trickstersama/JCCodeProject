@@ -14,5 +14,6 @@ namespace Features.Gameplay.Domain.Infrastructure
         Coordinate GetStartCoordinate();
         IAStarNode GetStartNode();
         IAStarNode GetGoalNode();
+        bool IsWalkable(Coordinate coordinate);
     }
 }
