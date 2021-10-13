@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Features.Gameplay.Domain.Infrastructure;
+using Features.Gameplay.Domain.ValueObjects;
 using NSubstitute;
 using NUnit.Framework;
 using PathFinding;
 using static Features.Gameplay.Tests.Mothers.CalculatePathMother;
+using static Features.Gameplay.Tests.Mothers.CoordinateMother;
 using static Features.Gameplay.Tests.Mothers.MapRepositoryMother;
+using static Features.Gameplay.Tests.Mothers.PathFindingServiceMother;
+using static Features.Gameplay.Tests.Mothers.ValueObjects.MapTileMother;
 
 namespace Features.Gameplay.Tests.Editor.Reactions
 {
@@ -16,19 +20,19 @@ namespace Features.Gameplay.Tests.Editor.Reactions
         public void SendOnPathCalculated()
         {
             //Given
-            var pathfindingService = Substitute.For<IPathfindingService>();
+            var onPathCalculated = Substitute.For<IObserver<IEnumerable<Coordinate>>>();
+            var pathfindingService = APathfindingService();
             var calculatePath = ACalculatePath(withPathfindingService: pathfindingService);
-            var onPathNodesReset = Substitute.For<IObserver<IEnumerable<IAStarNode>>>();
             
             //When
-            calculatePath.Do(onPathNodesReset);
+            calculatePath.Do(onPathCalculated);
             
             //Then
-            onPathNodesReset.Received(1).OnNext(Arg.Any<IEnumerable<IAStarNode>>());
+            onPathCalculated.Received(1).OnNext(Arg.Any<IEnumerable<Coordinate>>());
         }
         
         [Test]
-        public void CallPathfindingService()
+        public void CallCalculatePathOnService()
         {
             //Given
             var pathfindingService = Substitute.For<IPathfindingService>();
@@ -67,6 +71,53 @@ namespace Features.Gameplay.Tests.Editor.Reactions
             
             //Then
             mapRepository.Received(1).GetGoalNode();
+        }
+        [Test]
+        public void TravelToNeighbour()
+        {
+            //Given
+            var startCoordinate = ACoordinate(0, 0);
+            var goalCoordinate = ACoordinate(4, 0);
+            var onPathCalculated = Substitute.For<IObserver<IEnumerable<Coordinate>>>();
+            
+            var mapRepository = new MapRepository(
+                withStartCoordinate: startCoordinate,
+                withGoalCoordinate: goalCoordinate,
+                withNodes: SomeNodes()
+            );
+            var pathfindingService = new PathFindingService();
+            var calculatePath = ACalculatePath(
+                withMapRepository: mapRepository,
+                withPathfindingService: pathfindingService
+                );
+            
+            //When
+            calculatePath.Do(onPathCalculated: onPathCalculated);
+            
+            //Then
+            onPathCalculated.Received(1).OnNext(Arg.Any<IEnumerable<Coordinate>>());
+        }
+
+        Dictionary<Coordinate, MapNode> SomeNodes()
+        {
+            var rawNodes = new[]
+            {
+                AMapTile(0, 4, TileType.Forest), AMapTile(1, 4, TileType.Grass), AMapTile(2, 4, TileType.Mountain), AMapTile(3, 4, TileType.Forest), AMapTile(4, 4, TileType.Water),
+                AMapTile(0, 3, TileType.Forest), AMapTile(1, 3, TileType.Desert), AMapTile(2, 3, TileType.Grass), AMapTile(3, 3, TileType.Grass), AMapTile(4, 3, TileType.Forest),
+                AMapTile(0, 2, TileType.Grass), AMapTile(1, 2, TileType.Grass), AMapTile(2, 2, TileType.Water), AMapTile(3, 2, TileType.Mountain), AMapTile(4, 2, TileType.Desert),
+                AMapTile(0, 1, TileType.Grass), AMapTile(1, 1, TileType.Water), AMapTile(2, 1, TileType.Forest), AMapTile(3, 1, TileType.Water), AMapTile(4, 1, TileType.Grass),
+                AMapTile(0, 0, TileType.Grass), AMapTile(1, 0, TileType.Grass), AMapTile(2, 0, TileType.Desert), AMapTile(3, 0, TileType.Grass), AMapTile(4, 0, TileType.Mountain),
+            };
+
+            var mapService = new MapService();
+            var nodesFromTiles = mapService.CreateNodesFromTiles(rawNodes);
+            var nodesWithNeighbours = mapService.SetNodesNeighbours(nodesFromTiles);
+            var nodeSetup = new Dictionary<Coordinate, MapNode>();
+            foreach (var node in nodesWithNeighbours)
+            {
+                nodeSetup.Add(node.Coordinate(), node);
+            }
+            return nodeSetup;
         }
     }
 }

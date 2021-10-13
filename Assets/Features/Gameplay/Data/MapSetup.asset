@@ -174,10 +174,6 @@ MonoBehaviour:
       Y: 4
     TileType: 2
   - coordinate:
-      X: 7
-      Y: 4
-    TileType: 2
-  - coordinate:
       X: 0
       Y: 5
     TileType: 2

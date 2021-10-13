@@ -7,10 +7,4 @@ namespace Features.Gameplay.Domain.Infrastructure
     {
         IEnumerable<IAStarNode> CalculatePath(IAStarNode startNode, IAStarNode endNode);
     }
-
-    public class PathFindingService : IPathfindingService
-    {
-        public IEnumerable<IAStarNode> CalculatePath(IAStarNode startNode, IAStarNode endNode) => 
-            AStar.GetPath(startNode, endNode);
-    }
 }

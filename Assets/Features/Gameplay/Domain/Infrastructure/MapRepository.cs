@@ -6,16 +6,19 @@ namespace Features.Gameplay.Domain.Infrastructure
 {
     public class MapRepository : IMapRepository
     {
-        Dictionary< Coordinate, MapNode> nodes = new Dictionary<Coordinate, MapNode>();
+        Dictionary<Coordinate, MapNode> nodes;
         Coordinate startCoordinate;
         Coordinate goalCoordinate;
         
         bool startIsSet;
         bool goalIsSet;
         public MapRepository(
+            Dictionary<Coordinate, MapNode> withNodes = null,
             Coordinate? withStartCoordinate = null, 
             Coordinate? withGoalCoordinate = null
         ) {
+            nodes = withNodes ?? new Dictionary<Coordinate, MapNode>();
+            
             startCoordinate = withStartCoordinate ?? new Coordinate();
             goalCoordinate = withGoalCoordinate ?? new Coordinate();
 

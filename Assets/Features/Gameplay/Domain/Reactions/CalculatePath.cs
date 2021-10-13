@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Features.Gameplay.Domain.Infrastructure;
-using PathFinding;
+using Features.Gameplay.Domain.ValueObjects;
 
 namespace Features.Gameplay.Domain.Reactions
 {
@@ -18,14 +19,18 @@ namespace Features.Gameplay.Domain.Reactions
             this.mapRepository = mapRepository;
         }
 
-        public void Do(IObserver<IEnumerable<IAStarNode>> onPathCalculated)
+        public void Do(IObserver<IEnumerable<Coordinate>> onPathCalculated)
         {
-            var xxx = pathfindingService.CalculatePath(
+            var rawNodes = pathfindingService.CalculatePath(
                 mapRepository.GetStartNode(),
                 mapRepository.GetGoalNode()
             );
-            
-            onPathCalculated?.OnNext(xxx);
+            var coordinatesInOrder = rawNodes.Select(rawNode =>
+            {
+                var node = (MapNode) rawNode;
+                return node.Coordinate();
+            });
+            onPathCalculated?.OnNext(coordinatesInOrder);
         }
     }
 }

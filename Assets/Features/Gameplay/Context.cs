@@ -17,6 +17,7 @@ namespace Features.Gameplay
             var mapRepository = new MapRepository();
             var mapService = new MapService();
             var coordinateService = new CoordinatesService();
+            var pathfindingService = new PathFindingService();
             //actions
             var startGame = new CreateNodes(
                 mapRepository: mapRepository,
@@ -28,7 +29,10 @@ namespace Features.Gameplay
                 mapService: mapService
             );
             var setGoalNode = new SetGoalNode(mapRepository);
-
+            var calculatePath = new CalculatePath(
+                pathfindingService: pathfindingService,
+                mapRepository: mapRepository
+            );
             var mapPresenter = new MapPresenter(
                 tiles:tiles,
                 createNodes: startGame,
@@ -36,7 +40,8 @@ namespace Features.Gameplay
                 coordinateService: coordinateService,
                 clickMapTile: clickMapTile,
                 resetPathNodes: resetPathNodes,
-                setGoalNode: setGoalNode
+                setGoalNode: setGoalNode,
+                calculatePath: calculatePath
             );
         }
     }

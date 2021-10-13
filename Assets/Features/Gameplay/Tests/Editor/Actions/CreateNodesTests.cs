@@ -88,7 +88,7 @@ namespace Features.Gameplay.Tests.Editor.Actions
                 withMapRepository: mapRepository
             );
 
-            var expectedNodes = new []{AMapNode(withWeight: GameConstants.desertWeight)};
+            var expectedNodes = new []{AMapNode(withWeight: GameConstants.desertWeight, withCoordinate: ACoordinate(1,1))};
 
             //When
             createNodes.Do(inputTiles, null);
@@ -119,11 +119,11 @@ namespace Features.Gameplay.Tests.Editor.Actions
 
             var expectedNodes = new []
             {
-                AMapNode(withWeight: GameConstants.desertWeight),
-                AMapNode(withWeight: GameConstants.forestWeight),
-                AMapNode(withWeight: GameConstants.grassWeight),
-                AMapNode(withWeight: GameConstants.mountainWeight),
-                AMapNode(withWeight: GameConstants.mountainWeight)
+                AMapNode(withWeight: GameConstants.desertWeight, withCoordinate: ACoordinate(1,1)),
+                AMapNode(withWeight: GameConstants.forestWeight, withCoordinate:ACoordinate(2,1)),
+                AMapNode(withWeight: GameConstants.grassWeight, withCoordinate:ACoordinate(3,1)),
+                AMapNode(withWeight: GameConstants.mountainWeight, withCoordinate:ACoordinate(4,1)),
+                AMapNode(withWeight: GameConstants.mountainWeight, withCoordinate:ACoordinate(5,1))
             };
 
             //When
@@ -176,12 +176,12 @@ namespace Features.Gameplay.Tests.Editor.Actions
 
             var expectedNodes = new []
             {
-                AMapNode(withWeight: GameConstants.desertWeight),
-                AMapNode(withWeight: GameConstants.grassWeight),
-                AMapNode(withWeight: GameConstants.waterWeight),
-                AMapNode(withWeight: GameConstants.desertWeight),
-                AMapNode(withWeight: GameConstants.desertWeight),
-                AMapNode(withWeight: GameConstants.grassWeight),
+                AMapNode(withWeight: GameConstants.desertWeight, withCoordinate:ACoordinate(0,0)),
+                AMapNode(withWeight: GameConstants.grassWeight, withCoordinate:ACoordinate(1,0)),
+                AMapNode(withWeight: GameConstants.waterWeight, withCoordinate:ACoordinate(2,1)),
+                AMapNode(withWeight: GameConstants.desertWeight, withCoordinate:ACoordinate(1,2)),
+                AMapNode(withWeight: GameConstants.desertWeight, withCoordinate:ACoordinate(0,2)),
+                AMapNode(withWeight: GameConstants.grassWeight, withCoordinate:ACoordinate(0,1)),
             };
 
             //When
@@ -215,9 +215,9 @@ namespace Features.Gameplay.Tests.Editor.Actions
 
             var expectedNodes = new []
             {
-                AMapNode(withWeight: GameConstants.grassWeight),
-                AMapNode(withWeight: GameConstants.grassWeight),
-                AMapNode(withWeight: GameConstants.mountainWeight),
+                AMapNode(withWeight: GameConstants.grassWeight, withCoordinate:ACoordinate(1,0)),
+                AMapNode(withWeight: GameConstants.grassWeight, withCoordinate:ACoordinate(0,1)),
+                AMapNode(withWeight: GameConstants.mountainWeight, withCoordinate:ACoordinate(1,1)),
             };
 
             //When

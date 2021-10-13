@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshRenderer: {fileID: 2470616814942910978}
+  pathMaterial: {fileID: 2100000, guid: 253a04e780d72e14f8e708ffce4d4c9b, type: 2}
+  startGoalMaterial: {fileID: 2100000, guid: 5b777a886c487f947845c1f4ed042313, type: 2}
+  DefaultTintMaterial: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!64 &8870856469217372500
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -111,6 +114,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 32989c84c8b234d168f40b5652675bcc, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 32989c84c8b234d168f40b5652675bcc, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 919132149155446097, guid: 32989c84c8b234d168f40b5652675bcc, type: 3}
       propertyPath: m_Name
       value: Hexagon_Model

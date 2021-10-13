@@ -19,6 +19,7 @@ namespace Features.Gameplay.Delivery.Views
         IEnumerable<MapTile> tiles;
         ICoordinateService coordinateService;
         Dictionary<TileType, Material> tileMaterials = new Dictionary<TileType, Material>();
+        Dictionary<Coordinate, MapTileView> tileViews = new Dictionary<Coordinate, MapTileView>();
 
         
         public readonly ISubject<MapTile> OnMapTileClicked = new Subject<MapTile>();
@@ -55,6 +56,7 @@ namespace Features.Gameplay.Delivery.Views
                 newTile.SetMaterial(GetMaterialByType(tile.TileType));
                 newTile.Initialize(tile);
                 newTile.OnMapTileClicked.Subscribe(OnMapTileClicked);
+                tileViews.Add(tile.coordinate, newTile);
             }
         }
 
@@ -74,6 +76,15 @@ namespace Features.Gameplay.Delivery.Views
             tileMaterials.Add(TileType.Desert, desertMaterial);
             tileMaterials.Add(TileType.Mountain, mountainMaterial);
             tileMaterials.Add(TileType.Water, waterMaterial);
+        }
+
+        public void DrawPath(IEnumerable<Coordinate> path)
+        {
+            foreach (var tile in path)
+            {
+                tileViews[tile].ShowAsPath();
+                Debug.Log($"Tile {tile}");
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly ISubject<IGameEvent> onGoalSet = new Subject<IGameEvent>();
         readonly ISubject<Coordinate> onStartSet = new Subject<Coordinate>();
         readonly ISubject<IGameEvent> onPathNodesReset = new Subject<IGameEvent>();
+        readonly ISubject<IEnumerable<Coordinate>> onPathCalculated = new Subject<IEnumerable<Coordinate>>();
         
         readonly CreateNodes createNodes;
         readonly MapView mapView;
@@ -29,6 +30,7 @@ namespace Features.Gameplay.Delivery.Presenters
         readonly ClickMapTile clickMapTile;
         readonly ResetPathNodes resetPathNodes;
         readonly SetGoalNode setGoalNode;
+        readonly CalculatePath calculatePath;
 
         public MapPresenter(
             IEnumerable<MapTile> tiles,
@@ -37,7 +39,8 @@ namespace Features.Gameplay.Delivery.Presenters
             ICoordinateService coordinateService,
             ClickMapTile clickMapTile,
             ResetPathNodes resetPathNodes, 
-            SetGoalNode setGoalNode
+            SetGoalNode setGoalNode,
+            CalculatePath calculatePath
         ) {
             this.createNodes = createNodes;
             this.mapView = mapView;
@@ -45,6 +48,7 @@ namespace Features.Gameplay.Delivery.Presenters
             this.clickMapTile = clickMapTile;
             this.resetPathNodes = resetPathNodes;
             this.setGoalNode = setGoalNode;
+            this.calculatePath = calculatePath;
 
             PrepareForDisposition(new CompositeDisposable(),Disposables());
             onCreateNodes.OnNext(tiles);
@@ -61,7 +65,8 @@ namespace Features.Gameplay.Delivery.Presenters
                 OnNodeReset,
                 OnSetGoal,
                 OnGoalSet,
-                OnStartSet
+                OnStartSet,
+                OnPathCalculated
             };
 
         IDisposable OnInitializeMap =>
@@ -101,12 +106,17 @@ namespace Features.Gameplay.Delivery.Presenters
 
         IDisposable OnGoalSet =>
             onGoalSet
-                .Do(_ => Debug.Log("Goal Set, looking for path"))
+                .Do(_ => calculatePath.Do(onPathCalculated))
                 .Subscribe();
 
         IDisposable OnNodeReset =>
             onPathNodesReset
                 .Do(_ => mapView.ResetNodes())
+                .Subscribe();
+
+        IDisposable OnPathCalculated =>
+            onPathCalculated
+                .Do(path => mapView.DrawPath(path))
                 .Subscribe();
         
         static void PrepareForDisposition(CompositeDisposable disposables, IEnumerable<IDisposable> subscriptions)
